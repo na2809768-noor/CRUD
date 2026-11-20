@@ -7,7 +7,7 @@ function Users() {
 
     useEffect(() => {
         axios
-            .get("https://crud-ls9p.vercel.app")
+            .get("https://crud-f9z7.vercel.app")
             .then((result) => setUsers(result.data))
             .catch((err) => console.log(err));
     }, []);
