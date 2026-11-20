@@ -1,4 +1,3 @@
-
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -8,9 +7,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log("MongoDB Connected"))
-.catch(err => console.log(err))
+mongoose.connect("mongodb://127.0.0.1:27017/crud")
 
 app.get('/', (req, res) => {
     UserModel.find({})
@@ -38,7 +35,7 @@ app.put('/updateUser/:id', (req, res) => {
 app.delete('/deleteUser/:id', (req, res) => {
   const id = req.params.id;
   UserModel.findByIdAndDelete({_id: id})
- .then(user => res.json(user))
+  .then(res => res.json(res))
   .catch(err => res.json(err))
 })
 
@@ -52,4 +49,4 @@ app.post("/createUser", (req, res) => {
 
 app.listen(3001, () => {
     console.log("Server is Running")
-}) bakki ma modification kar du=i ha
+})
