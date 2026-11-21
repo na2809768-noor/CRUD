@@ -1,22 +1,13 @@
-
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const UserModel = require('./models/Users')
 
 const app = express()
-
-app.use(cors({
-    origin: "https://crud-tabl.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type"]
-}))
-
+app.use(cors())
 app.use(express.json())
 
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected"))
-.catch(err => console.log(err))
+mongoose.connect("mongodb://127.0.0.1:27017/crud")
 
 app.get('/', (req, res) => {
     UserModel.find({})
@@ -25,26 +16,29 @@ app.get('/', (req, res) => {
 })
 
 app.get('/getUser/:id', (req, res) => {
-    UserModel.findById(req.params.id)
+    const id = req.params.id;
+    UserModel.findById({_id:id})
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
-
 app.put('/updateUser/:id', (req, res) => {
-    UserModel.findByIdAndUpdate(req.params.id, {
+    const id = req.params.id;
+    UserModel.findByIdAndUpdate({_id: id}, {
         name: req.body.name,
         email: req.body.email,
-        age: req.body.age
-    }, { new: true })
+        age: req.body.age})
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
 
+
 app.delete('/deleteUser/:id', (req, res) => {
-    UserModel.findByIdAndDelete(req.params.id)
-    .then(result => res.json(result))
-    .catch(err => res.json(err))
+  const id = req.params.id;
+  UserModel.findByIdAndDelete({_id: id})
+  .then(res => res.json(res))
+  .catch(err => res.json(err))
 })
+
 
 app.post("/createUser", (req, res) => {
     UserModel.create(req.body)
@@ -52,4 +46,7 @@ app.post("/createUser", (req, res) => {
     .catch(err => res.json(err))
 })
 
-module.exports = app
+
+app.listen(3001, () => {
+    console.log("Server is Running")
+})
