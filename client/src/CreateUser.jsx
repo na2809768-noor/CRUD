@@ -11,7 +11,7 @@ function CreateUser() {
   const Submit = (e) => {
     e.preventDefault();
     axios
-      .post(" https://crud-w73s.vercel.app/create", { name, email, age })
+      .post("https://crud-mlsm.vercel.app/createUser"", { name, email, age })
       .then((result) => {
         console.log(result);
         navigate("/");
