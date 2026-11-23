@@ -1,35 +1,52 @@
-
 const express = require('express')
+const mongoose = require('mongoose')
 const cors = require('cors')
+const UserModel = require('./models/Users')
 
 const app = express()
-
 app.use(cors())
 app.use(express.json())
 
+mongoose.connect("mongodb://127.0.0.1:27017/crud")
+
 app.get('/', (req, res) => {
-    res.send("Backend is Running Successfully")
+    UserModel.find({})
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
 })
 
-app.post('/createUser', (req, res) => {
-    const { name, email, age } = req.body
-
-    if (!name || !email || !age) {
-        return res.status(400).json({
-            message: "Please fill all fields"
-        })
-    }
-
-    res.status(200).json({
-        message: "Your data has been received successfully!",
-        user: { name, email, age }
-    })
+app.get('/getUser/:id', (req, res) => {
+    const id = req.params.id;
+    UserModel.findById({_id:id})
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
+})
+app.put('/updateUser/:id', (req, res) => {
+    const id = req.params.id;
+    UserModel.findByIdAndUpdate({_id: id}, {
+        name: req.body.name,
+        email: req.body.email,
+        age: req.body.age})
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
 })
 
-if (require.main === module) {
-    app.listen(3001, () => {
-        console.log("Server is Running")
-    })
-}
 
-module.exports = app
+app.delete('/deleteUser/:id', (req, res) => {
+  const id = req.params.id;
+  UserModel.findByIdAndDelete({_id: id})
+  .then(res => res.json(res))
+  .catch(err => res.json(err))
+})
+
+
+app.post("/createUser", (req, res) => {
+    UserModel.create(req.body)
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
+})
+
+
+app.listen(3001, () => {
+    console.log("Server is Running")
+})
